@@ -55,10 +55,21 @@ def apagar_elemento(lista, pos):
     cont = 0
     while atual is not None:
         if pos == cont:
-            del atual['valor']
+            if atual['anterior'] is None and atual['proximo'] is None:
+                lista['inicio'] = lista['fim'] = None
+            elif atual['anterior'] is None:
+                lista['inicio'] = atual['proximo']
+                atual['proximo']['anterior'] = None 
+            elif atual['proximo'] is None:
+                atual['anterior']['proximo'] = None
+            else:
+                atual['anterior']['proximo'] = atual['proximo']
+                atual['proximo']['anterior'] = atual['anterior']
         atual = atual['proximo']
         cont += 1
     return lista 
+
+apagar_elemento(lista, 0)
 
 def imprimir(lista):
     atual = lista['inicio']
