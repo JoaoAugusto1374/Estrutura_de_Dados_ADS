@@ -11,9 +11,9 @@ def hash(s, c):
 def adicionar(tabela, chave, valor):
     index = hash(chave, tabela_hash['capacidade']) #encontrar o inidice
 
-    for (k, v) in tabela['buckets'][index]: #percorrer cada chave e valor nos baldes
+    for i, (k, v) in enumerate(tabela['buckets'][index]): #percorrer cada chave e valor nos baldes
         if k == chave:                      # se a chave que encontramos for igual a que será adicionada
-            tabela['buckets'][index] = (chave, valor) #só atualizo o valor existente, é como se eu substituisse na verdade
+            tabela['buckets'][index][i] = (chave, valor) #só atualizo o valor existente, é como se eu substituisse na verdade
             return tabela   # já retorna a tabela para não aumentar
     
     tabela['buckets'][index].append((chave, valor))
@@ -51,3 +51,44 @@ def apagar(tabela, chave, valor):
     return tabela
 
 print(apagar(tabela_hash, "SAULO", 1234))
+
+def rehash(tabela, limite):
+    fc = tabela['elementos'] / tabela['capacidade']
+    if fc > limite:
+        nova_capacidade = tabela['capacidade'] * 2
+        novos_baldes = tuple([] for _ in range(nova_capacidade))
+
+        for balde in novos_baldes:
+            for(chave, valor) in balde:
+                index = hash(chave, nova_capacidade)
+                novos_baldes[index].append((chave, valor))
+        
+        tabela['buckets'] = novos_baldes
+        tabela['capacidade'] = nova_capacidade
+
+def add_word(tabela, palavra, sinonimos):
+    index = hash(palavra, tabela['capacidade'])
+    
+    for i, (c, v) in enumerate(tabela['buckets'][index]):
+        if c == palavra:
+            tabela['buckets'][index][i] = (palavra, sinonimos)
+            return tabela 
+    tabela['buckets'][index].append((palavra, sinonimos))
+    return tabela 
+
+def add_sinonimo(tabela, chave, novoSinonimo):
+    index = hash(chave, tabela['capacidade'])
+
+    for i, (c, v) in enumerate(tabela['buckets'][index]):
+        if c == chave:
+            tabela['buckets'][index][i] = (chave, v + novoSinonimo)
+            return tabela 
+    return tabela
+
+def getSinonimos(tabela, chave):
+    index = hash(chave, tabela['capacidade']) 
+
+    for (c, v) in tabela['buckets'][index]:
+        if c == chave:
+            return v 
+    return chave 
