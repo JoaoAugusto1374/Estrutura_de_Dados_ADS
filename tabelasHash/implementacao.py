@@ -92,3 +92,32 @@ def getSinonimos(tabela, chave):
         if c == chave:
             return v 
     return chave 
+
+def shrink(tabela, limite):
+    fc = tabela['elementos'] / tabela['capacidade']
+    if fc < limite:
+        nova_capacidade = tabela['capacidade'] / 2
+        novos_baldes = tuple([] for _ in range(nova_capacidade))
+
+        for balde in novos_baldes:
+            for (chave, valor) in balde:
+                index = hash(chave, nova_capacidade)
+                novos_baldes[index].append((chave, valor))
+        tabela['buckets'] = novos_baldes
+        tabela['capacidade'] = nova_capacidade
+
+def frequencia(tabela, chave, frase):
+    adicionar(tabela, chave, frase)
+    index = hash(frase, tabela['capacidade'])
+
+    for i, (chave, frase) in enumerate(tabela['buckets'][index]):
+        palavras = frase.split()
+        contagem = {}
+        for palavra in palavras:
+            contagem[palavra] = contagem.get(palavra, 0) + 1
+
+        for palavra, cont in contagem.items():
+            if cont > 1:
+                print(f"A palavra '{palavra}' se repete {cont} vezes.")
+
+frequencia(tabela_hash, "FRASE", "hash hash tabela tabela")
