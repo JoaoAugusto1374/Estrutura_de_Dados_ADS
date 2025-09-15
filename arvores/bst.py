@@ -23,4 +23,16 @@ def inserir(arvore, valor):
                 atual['dir'] = no 
                 return
             atual = atual['dir']
-        
+
+def busca(arvore, valor):
+    comeco = arvore['raiz'] #isso aqui é o começar na raiz, finalmente no fim da disciplina parece que o entendimento chega
+
+    while comeco is not None: #isso aqui é verificar por sentinela até essa variável apontada ter o valor None.
+        if valor == comeco['valor']: #não precisa voltar ao while nesse caso porque cada vez que ele assume o valor que está na esquerda ou direita ele verifica se não deu pan no None. Agora entenda como apontar para remover
+            return True 
+        elif valor < comeco['valor']:
+            comeco = comeco['esq']
+        elif valor > comeco['valor']:
+            comeco = comeco['dir']
+    return False
+
